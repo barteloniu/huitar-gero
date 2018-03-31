@@ -6,6 +6,7 @@ const ambient = new THREE.AmbientLight(0x5e6380)
 const sun = new THREE.DirectionalLight(0x282a36, 4)
 const pr = window.devicePixelRatio || 1
 const pathDescription = [10, "r", "l", "r", "l", "r", "l", "r", "l", "r", "r", "r", "l", 5, "l", 7] //[1, "r", "r", 1, "r", "l", "l", 3, "l", 5, "l", "r", "r", 2]
+const ham = new Hammer(renderer.domElement)
 
 const player = {
     object: null,
@@ -73,6 +74,8 @@ const init = () => {
     player.object.add(camera)
     scene.add(player.object)
 
+    ham.get("swipe").set({direction: Hammer.DIRECTION_ALL})
+
     /*
     let rect = new THREE.RectAreaLight(0xbd93f9, 20, 1, 1)
     let rectM = new THREE.Mesh(new THREE.PlaneGeometry(), new THREE.MeshBasicMaterial({color: 0xbd93f9}))
@@ -107,6 +110,10 @@ window.addEventListener("resize", () => {
     
     camera.aspect = window.innerWidth / window.innerHeight
     camera.updateProjectionMatrix()
+})
+
+ham.on("swipeup swipeleft swiperight swipedown tap", e => {
+    //for now this function is only to prevent scrolling in chromium
 })
 
 const animate = () => {
