@@ -55,7 +55,6 @@ const init = () => {
     scene.add(mesh)
 
     let pPath = new PlayerPath(pathDescription)
-    console.log(pPath)
     for(const c of pPath.curves){
         player.path.points = player.path.points.concat(c.getSpacedPoints(10 * c.getLength()))
         player.path.points.pop()
@@ -67,7 +66,6 @@ const init = () => {
         cube.position.set(h[0][0], h[0][1], 0.25)
         scene.add(cube)
     }
-    console.log(pPath.curves)
 
     player.object = new THREE.Mesh(new THREE.TorusBufferGeometry(0.3, 0.1, 12, 32), new THREE.MeshLambertMaterial({color: 0x50fa7b}))
     //player.object.castShadow = true
@@ -136,7 +134,6 @@ const animate = () => {
     //ch.update()
 
     renderer.render(scene, camera)
-    player.object.position.y += 0.05
 }
 
 init()
