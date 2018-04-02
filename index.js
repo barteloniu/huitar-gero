@@ -5,19 +5,18 @@ const renderer = new THREE.WebGLRenderer({antialias: true})
 const ambient = new THREE.AmbientLight(0x5e6380)
 const sun = new THREE.DirectionalLight(0x282a36, 4)
 const pr = window.devicePixelRatio || 1
-const pathDescription = [10, "r", "l", "r", "l", "r", "l", "r", "l", "r", "r", "r", "l", 5, "l", 7] //[1, "r", "r", 1, "r", "l", "l", 3, "l", 5, "l", "r", "r", 2]
+const pathDescription = [10, "r", "l", "r", "l", "r", "l", "r", "l", "r", "r", "r", "l", 2, "u", 3, "l", 2, "d", 3, "l", 2, "d", 2, "r", "l"] //[1, "r", "r", 1, "r", "l", "l", 3, "l", 5, "l", "r", "r", 2]
 const ham = new Hammer(renderer.domElement)
 
 const player = {
     object: null,
     path: {
         progress: 0,
+        heightChange: [],
         points: []
     }
 }
 
-
-let geometry, material, mesh
 
 const init = () => {
     scene.background = new THREE.Color(0x282a36)
@@ -48,29 +47,34 @@ const init = () => {
     renderer.domElement.style.height = window.innerHeight + "px"
     document.body.appendChild(renderer.domElement)
 
-    material = new THREE.MeshStandardMaterial({color: 0xf8f8f2})
+    let pathMaterial = new THREE.MeshStandardMaterial({color: 0xf8f8f2})
 
-    geometry = new WorldPath(pathDescription).geometry
-    mesh = new THREE.Mesh(geometry, material)
-    //mesh.receiveShadow = true
-    scene.add(mesh)
+    let w = new WorldPath(pathDescription)
+    for(const s of w.segments){
+        let mesh = new THREE.Mesh(s.geometry, pathMaterial)
+        mesh.position.z = s.height
+        scene.add(mesh)
+    }
 
     let pPath = new PlayerPath(pathDescription)
-    for(const c of pPath.curves){
-        player.path.points = player.path.points.concat(c.getSpacedPoints(10 * c.getLength()))
-        player.path.points.pop()
-    }
-    for(const h of pPath.holograms){
-        let cube = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.1, 24), new THREE.MeshBasicMaterial({color: 0x8be9fd, transparent: true, opacity: 0.7}))
-        if(h[1] == "l") cube.material.color = new THREE.Color(0xffb86c)
-        cube.rotation.x = THREE.Math.degToRad(90)
-        cube.position.set(h[0][0], h[0][1], 0.25)
-        scene.add(cube)
+    for(const s of pPath.segments){
+        player.path.heightChange[player.path.points.length] = s.height
+        for(const c of s.curves){
+            player.path.points = player.path.points.concat(c.getSpacedPoints(10 * c.getLength()))
+            player.path.points.pop()
+        }
+        for(const h of s.holograms){
+            let mesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.1, 24),
+                new THREE.MeshBasicMaterial({color: 0x8be9fd, transparent: true, opacity: 0.7}))
+            if(h[1] === "l") mesh.material.color = new THREE.Color(0xffb86c)
+            mesh.rotation.x = THREE.Math.degToRad(90)
+            mesh.position.set(h[0][0], h[0][1], s.height + 0.25)
+            scene.add(mesh)
+        }
     }
 
     player.object = new THREE.Mesh(new THREE.TorusBufferGeometry(0.3, 0.1, 12, 32), new THREE.MeshLambertMaterial({color: 0x50fa7b}))
     //player.object.castShadow = true
-    player.object.position.z = 0.3
     player.object.add(camera)
     scene.add(player.object)
 
@@ -119,12 +123,15 @@ ham.on("swipeup swipeleft swiperight swipedown tap", e => {
 const animate = () => {
     requestAnimationFrame(animate)
 
+    if(player.path.heightChange[player.path.progress] !== undefined){
+        player.object.position.z = player.path.heightChange[player.path.progress] + 0.3
+    }
     player.object.position.x = player.path.points[player.path.progress].x
     player.object.position.y = player.path.points[player.path.progress].y
     player.path.progress++
-    if(player.path.progress == player.path.points.length) player.path.progress = 0
+    if(player.path.progress === player.path.points.length) player.path.progress = 0
 
-    if(player.path.progress != 0){
+    if(player.path.progress !== 0){
         let x = player.path.points[player.path.progress].x - player.path.points[player.path.progress - 1].x
         let y = player.path.points[player.path.progress].y - player.path.points[player.path.progress - 1].y
         player.object.rotation.z = Math.atan2(y, x) - Math.PI / 2
