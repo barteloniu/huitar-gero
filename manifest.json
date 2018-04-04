@@ -1,0 +1,17 @@
+{
+    "name": "Huitar Gero",
+    "short_name": "Huitar Gero",
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#282a36",
+    "theme_color": "#282a36",
+    "description": "a slightly better music game",
+    "orientation": "portrait",
+    "icons": [
+        {
+            "src": "icon.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ]
+}
