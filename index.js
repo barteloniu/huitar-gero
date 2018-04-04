@@ -1,4 +1,4 @@
-const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100)
+const camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.01, 100)
 const scene = new THREE.Scene()
 const renderer = new THREE.WebGLRenderer({antialias: true})
 //const controls = new THREE.OrbitControls(camera, renderer.domElement)
@@ -38,9 +38,9 @@ const init = () => {
     scene.add(sun)
     scene.add(ambient)
 
-    camera.position.z = 2.5
-    camera.position.y = -3
-    camera.rotation.x = THREE.Math.degToRad(70)
+    camera.position.z = 1.5
+    camera.position.y = -2
+    camera.rotation.x = THREE.Math.degToRad(80)
 
     renderer.setSize(window.innerWidth * pr, window.innerHeight * pr)
     renderer.domElement.style.width = window.innerWidth + "px"
@@ -66,7 +66,10 @@ const init = () => {
         for(const h of s.holograms){
             let mesh = new THREE.Mesh(new THREE.CylinderBufferGeometry(0.4, 0.4, 0.1, 24),
                 new THREE.MeshBasicMaterial({color: 0x8be9fd, transparent: true, opacity: 0.7}))
-            if(h[1] === "l") mesh.material.color = new THREE.Color(0xffb86c)
+            if(h[1] === "l") mesh.material.color = new THREE.Color(0xff5555)
+            else if(h[1] === "u") mesh.material.color = new THREE.Color(0xffb86c)
+            else if(h[1] === "d") mesh.material.color = new THREE.Color(0xf1fa8c)
+            //TODO: change this if mess to switch
             mesh.rotation.x = THREE.Math.degToRad(90)
             mesh.position.set(h[0][0], h[0][1], s.height + 0.25)
             scene.add(mesh)

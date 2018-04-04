@@ -33,7 +33,7 @@ class PlayerPath{
         let height = 0
         for(const i in map){
             if(map[i] === "u" || map[i] === "d"){
-                let s = new PlayerPathSegment(map.slice(cut, i), pos, rot, height)
+                let s = new PlayerPathSegment(map.slice(cut, +i + 1), pos, rot, height)
                 segments.push(s)
                 cut = +i + 1
                 if(map[i] === "d") height -= 2
@@ -166,6 +166,12 @@ class PlayerPathSegment{
                 pos[0] += orient[0]
                 pos[1] += orient[1]
                 rot -= 90
+            }
+            else if(i === "u"){
+                holograms.push([[pos[0] - sin * 0.5, pos[1] - cos * 0.5], "u"])
+            }
+            else if(i === "d"){
+                holograms.push([[pos[0] - sin * 0.5, pos[1] - cos * 0.5], "d"])
             }
         }
         this.endPos = pos
