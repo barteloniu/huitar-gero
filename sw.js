@@ -2,15 +2,14 @@ self.addEventListener("install", e => {
     e.waitUntil(
         caches.open("huitar-gero").then(c => {
             return c.addAll([
-                "/",
                 "/huitar-gero",
-                "lib/three.min.js",
-                "lib/OrbitControls.js",
-                "lib/hammer.min.js",
-                "index.html",
-                "index.css",
-                "index.js",
-                "path.js"
+                "/huitar-gero/lib/three.min.js",
+                "/huitar-gero/lib/OrbitControls.js",
+                "/huitar-gero/lib/hammer.min.js",
+                "/huitar-gero/index.html",
+                "/huitar-gero/index.css",
+                "/huitar-gero/index.js",
+                "/huitar-gero/path.js"
             ])
         })
     )
