@@ -108,6 +108,12 @@ const init = () => {
 
     //ch = new THREE.CameraHelper(sun.shadow.camera)
     //scene.add(ch)
+
+    if("serviceWorker" in navigator){
+        navigator.serviceWorker.register("sw.js").then(() => {
+            console.log("Service Worker registered")
+        })
+    }
 }
 
 window.addEventListener("resize", () => {
